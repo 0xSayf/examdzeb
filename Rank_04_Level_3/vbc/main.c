@@ -39,12 +39,13 @@ void    unexpected(char c)
     if (c)
         printf("Unexpected token '%c'\n", c);
     else
-        printf("Unexpected end of file\n");
+        printf("Unexpected end of input\n");
+    exit(1);
 }
 
 int accept(char **s, char c)
 {
-    if (**s)
+    if (**s == c)
     {
         (*s)++;
         return (1);
@@ -129,15 +130,22 @@ int eval_tree(node *tree)
         case VAL:
             return (tree->val);
     }
+    return (0);
 }
 
 int main(int argc, char **argv)
 {
     if (argc != 2)
         return (1);
-    node *tree = parse_expr(argv[1]);
-    if (!tree)
+    char *s = av[1];
+    node *tree = parse_expr(&s);
+    if (!tree || *s) {
+        if (*s)
+            unexpected(*s);
+        else
+            unexcpected(0);
         return (1);
+    }
     printf("%d\n", eval_tree(tree));
     destroy_tree(tree);
 }
