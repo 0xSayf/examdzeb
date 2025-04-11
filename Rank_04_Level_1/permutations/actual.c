@@ -37,7 +37,7 @@ void permute(char *str, int left, int right)
     for (int i = left; i <= right; i++)
     {
         swap(&str[left], &str[i]);
-        ft_sort(str + left + 1); 
+        // ft_sort(str + left + 1); 
         permute(str, left + 1, right);
         swap(&str[left], &str[i]);
     }
