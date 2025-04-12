@@ -154,3 +154,6 @@ int main(int argc, char **argv)
     printf("%d\n", eval_tree(tree));
     destroy_tree(tree);
 }
+    printf("%d\n", eval_tree(tree));
+    destroy_tree(tree);
+}
