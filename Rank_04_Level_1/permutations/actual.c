@@ -1,61 +1,68 @@
 #include <stdio.h>
-#include <stdlib.h>
 
-int ft_strlen(char *str)
+int get_next_permutation(char *perm, int n)
 {
-    int len = 0;
-    while (str[len] != '\0') len++;
-    return len;
+    int i = n - 1;
+    while (i > 0 && perm[i - 1] >= perm[i]) {
+        i--;
+    }
+
+    if (i <= 0) {
+        return (0);
+    }
+
+    int j = n;
+    while (j > i && perm[j - 1] <= perm[i - 1]) {
+        j--;
+    }
+
+    char tmp = perm[i - 1];
+    perm[i - 1] = perm[j - 1];
+    perm[j - 1] = tmp;
+
+    i++;
+    j = n;
+    while (i < j) {
+        tmp = perm[i - 1];
+        perm[i - 1] = perm[j - 1];
+        perm[j - 1] = tmp;
+        i++;
+        j--;
+    }
+
+    return (1);
 }
 
-void swap(char *a, char *b)
+void sort_char_arr(char *arr, int size)
 {
-    char tmp = *a;
-    *a = *b;
-    *b = tmp;
-}
-void ft_sort(char *str)
-{
-    int len = ft_strlen(str);
-    for (int i = 0; i < len; i++)
-    {
-        for (int j = 0; j < len - i - 1; j++)
-        {
-            if (str[j] > str[j + 1])
-                swap(&str[j], &str[j + 1]);
+    for (int i = 0; i < size - 1; i++) {
+        for (int j = 0; j < size - i - 1; j++) {
+            if (arr[j] > arr[j + 1]) {
+                char tmp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = tmp;
+            }
         }
     }
 }
-void permute(char *str, int left, int right)
+
+int main(int ac, char *av[])
 {
-    if (left == right)
-    {
-        puts(str);
-        return;
+    if (ac == 1)
+        return (0);
+
+    char *perm = av[1];
+    int n = 0;
+    while (perm[n]) {
+        n++;
     }
 
-    for (int i = left; i <= right; i++)
-    {
-        swap(&str[left], &str[i]);
-        // ft_sort(str + left + 1); 
-        permute(str, left + 1, right);
-        swap(&str[left], &str[i]);
-    }
+    sort_char_arr(perm, n);
+
+    do {
+        printf("%s\n", perm);
+    } while (get_next_permutation(perm, n));
 }
-
-int main(int argc, char *argv[])
-{
-    if (argc != 2)
-    {
-        puts("Usage: ./permutations <string>");
-        return 1;
-    }
-
-    char *str = argv[1];
-    int len = 0;
-    while (str[len] != '\0') len++;
-
-    permute(str, 0, len - 1);
 
     return 0;
 }
