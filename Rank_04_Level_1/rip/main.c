@@ -1,68 +1,69 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
-void print_solution(char *str) {
-    for (int i = 0; str[i]; i++) {
-        if (str[i] != ' ')
-            putchar(str[i]);
-        else
-            putchar('_'); 
-    }
-    puts("");
-}
-
-void backtrack(char *str, int index, int open_rem, int close_rem, int open, char *result, int res_index) {
-    if (str[index] == '\0') {
-        if (open == 0) {
-            result[res_index] = '\0';
-            print_solution(result);
+void solve(char *str, int pos, int open, int to_remove, char *tmp)
+{
+    if (!str[pos])
+    {
+        if (open == 0 && to_remove == 0)
+        {
+            tmp[pos] = '\0';
+            puts(tmp);
         }
         return;
     }
-
-    if (str[index] == '(') {
-        if (open_rem > 0) {
-            result[res_index] = ' ';
-            backtrack(str, index + 1, open_rem - 1, close_rem, open, result, res_index + 1);
+    if (to_remove > 0)
+    {
+        tmp[pos] = ' ';
+        solve(str, pos + 1, open, to_remove - 1, tmp);
+    }
+    if (str[pos] == '(')
+    {
+        tmp[pos] = '(';
+        solve(str, pos + 1, open + 1, to_remove, tmp);
+    }
+    else if (str[pos] == ')')
+    {
+        if (open > 0)
+        {
+            tmp[pos] = ')';
+            solve(str, pos + 1, open - 1, to_remove, tmp);
         }
-        result[res_index] = '(';
-        backtrack(str, index + 1, open_rem, close_rem, open + 1, result, res_index + 1);
-    } else if (str[index] == ')') {
-        if (close_rem > 0) {
-            result[res_index] = ' ';
-            backtrack(str, index + 1, open_rem, close_rem - 1, open, result, res_index + 1);
-        }
-        if (open > 0) {
-            result[res_index] = ')';
-            backtrack(str, index + 1, open_rem, close_rem, open - 1, result, res_index + 1);
-        }
-    } else {
-        result[res_index] = str[index];
-        backtrack(str, index + 1, open_rem, close_rem, open, result, res_index + 1);
+    }
+    else
+    {
+        tmp[pos] = str[pos];
+        solve(str, pos + 1, open, to_remove, tmp);
     }
 }
 
-void find_min_removals(char *str) {
-    int open_rem = 0, close_rem = 0;
-    for (int i = 0; str[i]; i++) {
-        if (str[i] == '(') open_rem++;
-        else if (str[i] == ')') {
-            if (open_rem > 0) open_rem--;
-            else close_rem++;
+int total_removals(char *str)
+{
+    int open = 0, close = 0;
+    for (int i = 0; str[i]; i++)
+    {
+        if (str[i] == '(')
+            open++;
+        else if (str[i] == ')')
+        {
+            if (open > 0)
+                open--;
+            else
+                close++;
         }
     }
-
-    int len = strlen(str);
-    char *result = (char *)malloc(len + 1);
-    if (!result) exit(1);
-
-    backtrack(str, 0, open_rem, close_rem, 0, result, 0);
-    free(result);
+    return open + close;
 }
 
-int main(int argc, char **argv) {
-    if (argc != 2) return 1;
-    find_min_removals(argv[1]);
-    return 0;
+int main(int ac, char *av[])
+{
+    if (ac != 2)
+        return (1);
+
+    char *str = av[1];
+    int n = 0;
+    while (str[n])
+        n++;
+
+    char temp[n + 1];
+    solve(str, 0, 0, total_removals(str), temp);
 }

@@ -100,13 +100,14 @@ node *parse_expr(char **s) {
     return (left);
 }
 
-node *parse_factor(char **s) {
+node *parse_factor(char **s) 
+{
     if (isdigit(**s)) {
         node n = {VAL, **s - '0', NULL, NULL};
         (*s)++;
         return (new_node(n));
     }
-    if (accept(s, '(')) {
+    if (!accept(s, '(')) {
         node *n = parse_expr(s);
         if (!expect(s, ')')) {
             destroy_tree(n);
@@ -151,9 +152,6 @@ int main(int argc, char **argv)
             unexpected(0);
         return (1);
     }
-    printf("%d\n", eval_tree(tree));
-    destroy_tree(tree);
-}
     printf("%d\n", eval_tree(tree));
     destroy_tree(tree);
 }

@@ -63,6 +63,3 @@ int main(int ac, char *av[])
         printf("%s\n", perm);
     } while (get_next_permutation(perm, n));
 }
-
-    return 0;
-}
